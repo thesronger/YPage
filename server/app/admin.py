@@ -4,13 +4,13 @@ from flask_admin.contrib.sqla import ModelView
 import psutil
 from app.models import db, Book
 
-admin = None  # Variable globale pour éviter les doublons
+admin = None  # Global variable to avoid duplication
 
-# Vue Admin Personnalisée pour le Monitoring
+# Custom Admin View for Monitoring
 class MonitorView(BaseView):
     @expose('/')
     def index(self):
-        # Collecte des informations système
+        # Collecting system information
         system_info = {
             "status": "running",
             "cpu_usage": psutil.cpu_percent(),
@@ -18,14 +18,14 @@ class MonitorView(BaseView):
         }
         return self.render("admin/monitor.html", system_info=system_info)
 
-# Initialisation de Flask-Admin
+# Initializing Flask-Admin
 def init_admin(app):
     global admin
     if not admin:
         admin = Admin(app, name="Admin Panel", template_mode="bootstrap3")
 
-        # Ajout du modèle Book dans l'admin
+        # Add Book template in admin
         admin.add_view(ModelView(Book, db.session))
 
-        # Ajout de la page Monitoring
+        # Monitoring page added
         admin.add_view(MonitorView(name="Monitoring", endpoint="monitor"))

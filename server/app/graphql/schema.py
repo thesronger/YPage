@@ -1,6 +1,7 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from app.models import Book
+from app import db
 
 # Définir le type GraphQL pour le modèle Book
 class BookType(SQLAlchemyObjectType):
@@ -13,11 +14,11 @@ class Query(graphene.ObjectType):
     all_books = graphene.List(BookType)
 
     def resolve_all_books(self, info):
-        # Récupérer tous les livres
+        # Recover all books
         query = Book.query.all()
         return query
 
-# Mutation (exemple : ajout d'un livre)
+# Mutation (example: addition of a book)
 class CreateBook(graphene.Mutation):
     class Arguments:
         title = graphene.String(required=True)
@@ -35,5 +36,5 @@ class CreateBook(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_book = CreateBook.Field()
 
-# Schéma GraphQL
+# GraphQL diagram
 schema = graphene.Schema(query=Query, mutation=Mutation)

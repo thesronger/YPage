@@ -10,6 +10,6 @@ bp.add_url_rule(
     view_func=GraphQLView.as_view(
         'graphql',
         schema=schema,
-        graphiql=True  # Interface web GraphiQL activée pour tester les requêtes
+        graphiql=True  # GraphiQL web interface enabled for query testing
     )
 )

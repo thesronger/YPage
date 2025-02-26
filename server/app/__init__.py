@@ -8,16 +8,15 @@ from app.models import db
 
 def create_app():
     app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'  # Modifier si besoin
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db' 
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
     CORS(app)
 
-    # Enregistrer les routes
-    app.register_blueprint(routes_blueprint)  # Ajoute `/monitor`
+    app.register_blueprint(routes_blueprint)
 
-    # Initialiser Flask-Admin
+    # Initialize Flask-Admin
     init_admin(app)
 
     return app
