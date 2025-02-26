@@ -1,36 +1,32 @@
-from flask import jsonify
-from flask_admin import Admin, BaseView, expose
+from flask import redirect, session, url_for
+from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-import psutil
 from app.models import db, Book
 
-admin = None  # Global variable to avoid duplication
-
-# Custom Admin View for Monitoring
-class SecureMonitorView(BaseView):
+# 🔴 Secure Admin class (blocks access to /admin/)
+class SecureAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
-        if not self.is_accessible():
-            return "Accès interdit", 403
-        system_info = {
-            "status": "running",
-            "cpu_usage": psutil.cpu_percent(),
-            "memory_usage": psutil.virtual_memory().percent
-        }
-        return self.render("admin/monitor.html", system_info=system_info)
+        if not session.get("is_admin"):
+            return redirect(url_for("routes.not_authorized"))  # Redirige si pas admin
+        return super().index()
 
+# 🔴 Block access to templates (e.g. /admin/book/)
+class SecureModelView(ModelView):
     def is_accessible(self):
-        # Ajoutez ici une vérification d'utilisateur (session, token, etc.)
-        return True  # Modifier pour une vraie vérification
+        return session.get("is_admin")
 
-# Initializing Flask-Admin
+    def inaccessible_callback(self, name, **kwargs):
+        return redirect(url_for("routes.not_authorized"))  # Redirects to an error page
+
+# 🔴 One-time initialization of Flask-Admin
+admin = Admin(name="Admin Panel", template_mode="bootstrap3", index_view=SecureAdminIndexView())
+
 def init_admin(app):
-    global admin
-    if not admin:
-        admin = Admin(app, name="Admin Panel", template_mode="bootstrap3")
+    if not hasattr(app, "flask_admin_initialized"):
+        app.flask_admin_initialized = True  # Mark initialization to avoid duplicates
 
-        # Add Book template in admin
-        admin.add_view(ModelView(Book, db.session))
+        admin.init_app(app)
 
-        # Monitoring page added
-        admin.add_view(SecureMonitorView(name="Monitoring", endpoint="monitor"))
+        # Add secure templates
+        admin.add_view(SecureModelView(Book, db.session))

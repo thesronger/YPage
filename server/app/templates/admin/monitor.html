@@ -8,12 +8,38 @@
         body { font-family: Arial, sans-serif; margin: 20px; }
         h1 { color: #333; }
         p { font-size: 18px; }
+        #status { font-weight: bold; }
+        .error { color: red; font-weight: bold; }
     </style>
+    <script>
+        function updateMonitor() {
+            fetch('/admin/monitor/monitor_data')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Accès refusé');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("status").innerText = data.status;
+                    document.getElementById("cpu").innerText = data.cpu_usage + "%";
+                    document.getElementById("ram").innerText = data.memory_usage + "%";
+                })
+                .catch(error => {
+                    document.getElementById("error").innerText = "❌ Accès refusé - Vous devez être administrateur";
+                });
+        }
+
+        // Rafraîchir toutes les secondes
+        setInterval(updateMonitor, 1000);
+        window.onload = updateMonitor;
+    </script>
 </head>
 <body>
     <h1>Statut du Serveur</h1>
-    <p><strong>Statut :</strong> {{ system_info.status }}</p>
-    <p><strong>Utilisation CPU :</strong> {{ system_info.cpu_usage }}%</p>
-    <p><strong>Utilisation RAM :</strong> {{ system_info.memory_usage }}%</p>
+    <p class="error" id="error"></p>
+    <p><strong>Statut :</strong> <span id="status">Chargement...</span></p>
+    <p><strong>Utilisation CPU :</strong> <span id="cpu">0%</span></p>
+    <p><strong>Utilisation RAM :</strong> <span id="ram">0%</span></p>
 </body>
 </html>
