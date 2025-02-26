@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        p { font-size: 18px; }
+    </style>
+</head>
+<body>
+    <h1>Statut du Serveur</h1>
+    <p><strong>Statut :</strong> {{ system_info.status }}</p>
+    <p><strong>Utilisation CPU :</strong> {{ system_info.cpu_usage }}%</p>
+    <p><strong>Utilisation RAM :</strong> {{ system_info.memory_usage }}%</p>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_graphql import GraphQLView
 from app.graphql.schema import schema
 
