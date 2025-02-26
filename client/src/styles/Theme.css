@@ -1,0 +1,95 @@
+/* Palette de couleurs */
+:root {
+    --dark: #1E1E1E;
+    --brown-dark: #443429;
+    --brown-medium: #7E5D40;
+    --beige: #D6C0A3;
+    --light: #F4F4F4;
+    --font-title: 'Garamond', serif;
+    --font-body: 'Lora', serif;
+  }
+  
+  /* Style global */
+  body {
+    font-family: var(--font-body);
+    background-color: var(--beige);
+    color: var(--dark);
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Style des titres */
+  h1, h2, h3 {
+    font-family: var(--font-title);
+    color: var(--brown-dark);
+  }
+  
+  /* Boutons */
+  button {
+    font-family: var(--font-title);
+    background-color: var(--brown-dark);
+    color: var(--light);
+    padding: 10px 15px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+  }
+  
+  button:hover {
+    background-color: var(--brown-medium);
+  }
+  
+  /* Conteneurs */
+  .container {
+    padding: 20px;
+  }
+  
+  /* Navigation */
+  .nav-buttons button {
+    background: var(--brown-dark);
+    color: var(--light);
+    padding: 8px 15px;
+    border-radius: 15px;
+    font-weight: bold;
+  }
+  
+  /* Icônes */
+  .icons span {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  /* Recommandations */
+  .recommendations {
+    background: var(--brown-medium);
+    border-radius: 15px;
+    padding: 15px;
+    color: var(--light);
+  }
+  
+  .books-carousel img {
+    width: 120px;
+    margin: 5px;
+    border-radius: 10px;
+  }
+  
+  /* Pile à Lire */
+  .reading-pile {
+    text-align: center;
+  }
+  
+  .books-list {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .book {
+    background-color: var(--brown-dark);
+    color: var(--light);
+    padding: 15px;
+    border-radius: 10px;
+    font-weight: bold;
+  }
+  
