@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, render_template, session
+from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_graphql import GraphQLView
 from app.graphql.schema import schema
+from server.app.models import AdminUser
 
 bp = Blueprint('routes', __name__)
 
@@ -14,24 +15,31 @@ bp.add_url_rule(
     )
 )
 
-# Debug route
+# Connexion route
 #--------------------------------------------------------------#
-    # Route to activate admin mode
-@bp.route('/set_admin')
-def set_admin():
-    session["is_admin"] = True
-    return "✅ Mode administrateur activé."
+@bp.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        # Vérifier si l'utilisateur existe en base
+        admin = AdminUser.query.filter_by(username=username).first()
+        if admin and admin.check_password(password):
+            session['admin_id'] = admin.id
+            flash("Connexion réussie !", "success")
+            return redirect(url_for('admin.index'))
+        else:
+            flash("Nom d'utilisateur ou mot de passe incorrect", "danger")
 
-    # Route to disable admin mode
-@bp.route('/unset_admin')
-def unset_admin():
-    session["is_admin"] = False
-    return "❌ Mode administrateur désactivé."
+    return render_template("login.html")
 
-    # Test route to see user status
-@bp.route('/is_admin')
-def check_admin():
-    return f"Admin : {session.get('is_admin', False)}"
+@bp.route('/logout')
+def logout():
+    session.pop('admin_id', None)
+    flash("Déconnexion réussie", "success")
+    return redirect(url_for('routes.login'))
+
 
 #--------------------------------------------------------------#
 

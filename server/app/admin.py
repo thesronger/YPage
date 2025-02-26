@@ -1,32 +1,32 @@
 from flask import redirect, session, url_for
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.contrib.sqla import ModelView
-from app.models import db, Book
+from app.models import db, Book, AdminUser
 
-# 🔴 Secure Admin class (blocks access to /admin/)
+# 🔴 Classe Admin Sécurisée (bloque l'accès à /admin/)
 class SecureAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
-        if not session.get("is_admin"):
-            return redirect(url_for("routes.not_authorized"))  # Redirige si pas admin
+        if not session.get("admin_id"):
+            return redirect(url_for("routes.login"))  # Redirige si pas admin
         return super().index()
 
-# 🔴 Block access to templates (e.g. /admin/book/)
+# 🔴 Bloquer l'accès aux modèles (ex: /admin/book/)
 class SecureModelView(ModelView):
     def is_accessible(self):
-        return session.get("is_admin")
+        return session.get("admin_id") is not None
 
     def inaccessible_callback(self, name, **kwargs):
-        return redirect(url_for("routes.not_authorized"))  # Redirects to an error page
+        return redirect(url_for("routes.login"))
 
-# 🔴 One-time initialization of Flask-Admin
+# 🔴 Initialisation unique de Flask-Admin
 admin = Admin(name="Admin Panel", template_mode="bootstrap3", index_view=SecureAdminIndexView())
 
 def init_admin(app):
     if not hasattr(app, "flask_admin_initialized"):
-        app.flask_admin_initialized = True  # Mark initialization to avoid duplicates
+        app.flask_admin_initialized = True  # Marquer l'initialisation
 
         admin.init_app(app)
 
-        # Add secure templates
+        # Ajouter les modèles sécurisés
         admin.add_view(SecureModelView(Book, db.session))
