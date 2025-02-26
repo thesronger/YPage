@@ -7,16 +7,21 @@ from app.models import db, Book
 admin = None  # Global variable to avoid duplication
 
 # Custom Admin View for Monitoring
-class MonitorView(BaseView):
+class SecureMonitorView(BaseView):
     @expose('/')
     def index(self):
-        # Collecting system information
+        if not self.is_accessible():
+            return "Accès interdit", 403
         system_info = {
             "status": "running",
             "cpu_usage": psutil.cpu_percent(),
             "memory_usage": psutil.virtual_memory().percent
         }
         return self.render("admin/monitor.html", system_info=system_info)
+
+    def is_accessible(self):
+        # Ajoutez ici une vérification d'utilisateur (session, token, etc.)
+        return True  # Modifier pour une vraie vérification
 
 # Initializing Flask-Admin
 def init_admin(app):
@@ -28,4 +33,4 @@ def init_admin(app):
         admin.add_view(ModelView(Book, db.session))
 
         # Monitoring page added
-        admin.add_view(MonitorView(name="Monitoring", endpoint="monitor"))
+        admin.add_view(SecureMonitorView(name="Monitoring", endpoint="monitor"))

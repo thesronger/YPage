@@ -1,7 +1,6 @@
 import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
-from app.models import Book
-from app import db
+from app.models import Book, db
 
 # Définir le type GraphQL pour le modèle Book
 class BookType(SQLAlchemyObjectType):
