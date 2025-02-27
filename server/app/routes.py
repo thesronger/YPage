@@ -1,7 +1,7 @@
 from flask import Blueprint, flash, jsonify, redirect, render_template, request, session, url_for
 from flask_graphql import GraphQLView
 from app.graphql.schema import schema
-from server.app.models import AdminUser
+from app.models import AdminUser
 
 bp = Blueprint('routes', __name__)
 
@@ -15,7 +15,7 @@ bp.add_url_rule(
     )
 )
 
-# Connexion route
+# Login & logout routes
 #--------------------------------------------------------------#
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -23,21 +23,21 @@ def login():
         username = request.form['username']
         password = request.form['password']
         
-        # Vérifier si l'utilisateur existe en base
+        # Check if the user exists in the database
         admin = AdminUser.query.filter_by(username=username).first()
         if admin and admin.check_password(password):
             session['admin_id'] = admin.id
-            flash("Connexion réussie !", "success")
+            flash("Successfuly login!", "success")
             return redirect(url_for('admin.index'))
         else:
-            flash("Nom d'utilisateur ou mot de passe incorrect", "danger")
+            flash("Incorrect username or password", "danger")
 
     return render_template("login.html")
 
 @bp.route('/logout')
 def logout():
     session.pop('admin_id', None)
-    flash("Déconnexion réussie", "success")
+    flash("Successfuly logout", "success")
     return redirect(url_for('routes.login'))
 
 

@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import os
 from app.models import db
+from app.routes import bp as routes_blueprint
 
 def create_app():
     app = Flask(__name__)
@@ -14,6 +15,8 @@ def create_app():
 
     db.init_app(app)
     CORS(app)
+
+    app.register_blueprint(routes_blueprint)
 
     # Initialize the database
     with app.app_context():

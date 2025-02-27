@@ -5,10 +5,10 @@ app = create_app()
 with app.app_context():
     db.create_all()
 
-    # 🔴 Vérifier s'il y a déjà un admin
+    # 🔴 Check if there's already an admin
     if not AdminUser.query.first():
         admin = AdminUser(username="admin")
-        admin.set_password("YPage06!")  # 🔴 Modifier le mot de passe !
+        admin.set_password("YPage06!")
         db.session.add(admin)
         db.session.commit()
         print("✅ Admin créé avec succès !")

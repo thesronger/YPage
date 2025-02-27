@@ -2,13 +2,13 @@ import graphene
 from graphene_sqlalchemy import SQLAlchemyObjectType
 from app.models import Book, db
 
-# Définir le type GraphQL pour le modèle Book
+# Set the GraphQL type for the Book template
 class BookType(SQLAlchemyObjectType):
     class Meta:
         model = Book
         interfaces = (graphene.relay.Node,)
 
-# Requêtes (queries)
+# Requests (queries)
 class Query(graphene.ObjectType):
     all_books = graphene.List(BookType)
 
